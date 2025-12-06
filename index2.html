@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nuclear Physics: Power, Promise & Responsibility</title>
+    <meta name="description"
+        content="A public-friendly guide to nuclear physics: mass–energy, fission, fusion, real-world benefits, and how risk is managed safely." />
+
+    <!-- GSAP (animation) -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --bg0: #0a0410;
+            /* Deeper, more atmospheric background */
+            --bg1: #150820;
+            --panel: #200c30;
+            --muted: #d0c0e0;
+            --text: #e8e0ff;
+
+            /* Fusion/Fission Glow Colors (High Energy) */
+            --fusion-cyan: #00ffff;
+            --fusion-magenta: #ff00ff;
+            --fusion-orange: #ff9900;
+
+            --accent: var(--fusion-orange);
+            --accent2: var(--fusion-cyan);
+            --good: #90ee90;
+            /* Light Green */
+            --warn: #ffff00;
+            /* Yellow */
+            --bad: #ff4500;
+            /* Orange-Red */
+            --stroke: rgba(255, 255, 255, .15);
+            --shadow: 0 18px 70px rgba(0, 0, 0, .65);
+
+            --mono: 'Dank Mono', 'Fira Code', 'Roboto Mono', var(--mono-original);
+            --mono-original: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+            /* Best Font (Sci-Fi Look) - 'Orbitron' is the best choice here */
+            --sans: 'Orbitron', 'Roboto', system-ui, -apple-system, Segoe UI, Arial, "Noto Sans", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--text);
+            /* Radial gradient for deep space/reactor core feel */
+            background: radial-gradient(1200px 900px at 10% 5%, #401060 0%, var(--bg0) 55%, #050010 100%);
+            letter-spacing: .5px;
+            /* Increased letter-spacing for sci-fi feel */
+        }
+
+        a {
+            color: var(--fusion-cyan);
+            /* Links stand out with a glow color */
+            text-decoration: none;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+            transition: color .15s ease, text-shadow .15s ease;
+        }
+
+        a:hover {
+            color: var(--fusion-magenta);
+            text-shadow: 0 0 8px var(--fusion-magenta);
+        }
+
+        ::selection {
+            background: rgba(0, 255, 255, .22);
+        }
+
+        /* --- Layout --- */
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 18px 16px 90px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            backdrop-filter: blur(10px);
+            background: linear-gradient(180deg, rgba(10, 4, 16, .95), rgba(10, 4, 16, .70) 85%, rgba(10, 4, 16, 0));
+            /* Edge Glow on Topbar */
+            border-bottom: 1px solid rgba(0, 255, 255, .2);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2);
+            transition: box-shadow 0.5s ease-in-out;
+        }
+
+        .nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .brand {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px var(--fusion-orange);
+        }
+
+        .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background:
+                radial-gradient(10px 10px at 30% 30%, var(--fusion-cyan), transparent 58%),
+                conic-gradient(from 210deg, var(--fusion-orange), var(--fusion-magenta), var(--fusion-cyan), var(--fusion-orange));
+            /* Enhanced Mark Glow */
+            box-shadow: 0 0 15px var(--fusion-orange), 0 0 30px var(--fusion-magenta);
+            position: relative;
+            overflow: hidden;
+            animation: markPulse 3s ease-in-out infinite;
+        }
+
+        .mark:after {
+            content: "";
+            position: absolute;
+            inset: 9px;
+            border-radius: 10px;
+            border: 1px solid var(--fusion-cyan);
+            background: rgba(10, 4, 16, .75);
+        }
+
+        @keyframes markPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px var(--fusion-orange), 0 0 30px var(--fusion-magenta);
+            }
+
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 20px var(--fusion-cyan), 0 0 40px var(--fusion-magenta);
+            }
+        }
+
+        .navlinks {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .chip {
+            border: 1px solid rgba(0, 255, 255, .4);
+            background: rgba(20, 10, 30, .78);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: .5px;
+            text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .chip:hover {
+            transform: translateY(-2px);
+            background: rgba(32, 12, 48, .92);
+            border-color: var(--fusion-magenta);
+            box-shadow: 0 0 10px var(--fusion-magenta);
+        }
+
+        /* --- Hero --- */
+        .hero {
+            display: grid;
+            gap: 12px;
+            padding: 22px 0 10px;
+        }
+
+        .kicker {
+            color: var(--fusion-cyan);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px var(--fusion-cyan);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 4vw, 50px);
+            line-height: 1.05;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .sub {
+            margin: 0;
+            max-width: 72ch;
+            color: rgba(232, 224, 255, .9);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .heroGrid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1.15fr .85fr;
+            align-items: stretch;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 860px) {
+            .heroGrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            border-radius: 18px;
+            /* Multi-color Nuclear Glow for Panel */
+            border: 1px solid rgba(0, 255, 255, .3);
+            background: linear-gradient(145deg, rgba(32, 12, 48, .95), rgba(15, 6, 25, .95));
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 30px rgba(255, 0, 255, 0.3), var(--shadow);
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.5s ease;
+        }
+
+        .panel:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.5), 0 18px 70px rgba(0, 0, 0, .75);
+        }
+
+        .panel .p {
+            padding: 16px 16px 14px;
+        }
+
+        .panel .title {
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px;
+            font-size: 18px;
+            color: var(--fusion-cyan);
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+
+        .panel .text {
+            margin: 0;
+            color: rgba(232, 224, 255, .9);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .glow {
+            position: absolute;
+            inset: -1px;
+            /* Reactor-like glow */
+            background:
+                radial-gradient(520px 240px at 20% 0%, rgba(255, 0, 255, .25), transparent 64%),
+                radial-gradient(520px 240px at 100% 10%, rgba(0, 255, 255, .20), transparent 64%);
+            pointer-events: none;
+            animation: glowFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes glowFloat {
+
+            0%,
+            100% {
+                opacity: .8;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* --- Section styling --- */
+        section {
+            padding: 22px 0;
+        }
+
+        .secTop {
+            display: flex;
+            gap: 10px;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .h2 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: .5px;
+            font-weight: 800;
+            color: var(--fusion-orange);
+            text-shadow: 0 0 5px rgba(255, 153, 0, 0.6);
+        }
+
+        .small {
+            font-size: 14px;
+            color: rgba(232, 224, 255, .75);
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 860px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            border-radius: 16px;
+            /* Card Glow Effect */
+            border: 1px solid rgba(0, 255, 255, .2);
+            background: rgba(32, 12, 48, .85);
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), 0 12px 38px rgba(0, 0, 0, .55);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            /* Enhanced Hover Glow */
+            box-shadow: 0 0 20px var(--fusion-cyan), 0 0 40px var(--fusion-magenta), 0 16px 48px rgba(0, 0, 0, .7);
+            border-color: var(--fusion-magenta);
+        }
+
+        .card .p {
+            padding: 14px 14px 12px;
+        }
+
+        .tag {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--fusion-cyan);
+            box-shadow: 0 0 8px var(--fusion-cyan);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        .tag.benefit .dot {
+            background: var(--good);
+            box-shadow: 0 0 8px var(--good);
+        }
+
+        .tag.risk .dot {
+            background: var(--bad);
+            box-shadow: 0 0 8px var(--bad);
+        }
+
+        @keyframes dotPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.7;
+            }
+        }
+
+        /* --- Calculator --- */
+        .calc {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid rgba(0, 255, 255, .25);
+            padding-top: 14px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        label {
+            font-size: 14px;
+            color: var(--fusion-magenta);
+            font-weight: 800;
+            text-shadow: 0 0 3px rgba(255, 0, 255, 0.5);
+        }
+
+        input[type="number"],
+        select {
+            background: rgba(255, 255, 255, .15);
+            border: 1px solid var(--fusion-cyan);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 8px 12px;
+            outline: none;
+            min-width: 150px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--fusion-magenta);
+            box-shadow: 0 0 10px var(--fusion-magenta);
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .result {
+            display: grid;
+            gap: 8px;
+            background: rgba(10, 4, 16, .75);
+            border: 1px solid var(--fusion-orange);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 0 15px rgba(255, 153, 0, 0.4);
+            animation: resultFadeIn 0.5s ease-out;
+        }
+
+        @keyframes resultFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mono {
+            font-family: var(--mono);
+            font-size: 14px;
+            letter-spacing: .5px;
+            color: var(--fusion-cyan);
+            text-shadow: 0 0 3px rgba(0, 255, 255, 0.4);
+        }
+
+        .foot {
+            margin-top: 30px;
+            color: rgba(232, 224, 255, .72);
+            font-size: 14px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="wrap">
+            <div class="nav">
+                <div class="brand" aria-label="Nuclear physics public guide">
+                    <div class="mark" aria-hidden="true"></div>
+                    <div>NUCLEAR: <span style="color:var(--accent)">POWER</span> & <span
+                            style="color:var(--accent2)">RESPONSIBILITY</span></div>
+                </div>
+                <div class="navlinks" role="navigation" aria-label="Sections">
+                    <a class="chip" href="#what">What it is</a>
+                    <a class="chip" href="#fission">Fission</a>
+                    <a class="chip" href="#fusion">Fusion</a>
+                    <a class="chip" href="#use">Use & misuse</a>
+                    <a class="chip" href="#lab">Energy lab</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <header class="hero">
+            <div class="kicker">A plain-English tour of nuclear physics — the science behind power, medicine, and (when
+                mishandled) catastrophe.</div>
+            <h1>From tiny mass changes to enormous energy: <span style="color:var(--accent)">E = mc²</span> in real life
+            </h1>
+            <p class="sub">
+                Nuclear physics is the study of the nucleus—the compact core of atoms. When binding energy changes (in
+                fission or fusion),
+                a small mass difference becomes energy. The same physics can light cities, diagnose disease, or—if
+                diverted into weapons—cause
+                devastating harm. The best public understanding is: celebrate the benefits, and design the systems that
+                prevent misuse.
+            </p>
+
+            <div class="heroGrid">
+                <div class="panel reveal">
+                    <div class="glow" aria-hidden="true"></div>
+                    <div class="p">
+                        <div class="title">The key idea (mass → energy)</div>
+                        <p class="text">
+                            If mass <em>m</em> is converted to energy, the yield is <span class="mono">E = m c²</span>.
+                            Because <span class="mono">c</span> (light speed) is huge, even tiny mass changes correspond
+                            to enormous energy.
+                        </p>
+                    </div>
+                </div>
+                <div class="panel reveal">
+                    <div class="glow" aria-hidden="true"></div>
+                    <div class="p">
+                        <div class="title">Why it matters (in human terms)</div>
+                        <p class="text">
+                            One kilogram of mass (if fully converted) corresponds to ~<span class="mono">9×10¹⁶
+                                J</span>—roughly enough to meet
+                            the annual energy use of about <strong>180,000</strong> people in the U.S.
+                            (order-of-magnitude context, not an operational plan).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="what" class="reveal">
+            <div class="secTop">
+                <div>
+                    <div class="h2">What nuclear physics is (in one picture)</div>
+                    <div class="small">Nuclei are held together by binding energy; changing how tightly nucleons are
+                        bound changes mass and releases energy.</div>
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top: 12px;">
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> Binding energy (the "glue")</div>
+                        <p class="text" style="margin-top: 6px;">
+                            Nucleons (protons/neutrons) are stabilized by the strong force. When a reaction moves toward
+                            a more tightly bound state,
+                            the missing mass appears as released energy (E = mc²).
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> Why heavy vs light matters</div>
+                        <p class="text" style="margin-top: 6px;">
+                            For nuclei heavier than iron, splitting (fission) can increase binding per nucleon. For
+                            lighter nuclei, joining (fusion) can do the same.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fission" class="reveal">
+            <div class="secTop">
+                <div>
+                    <div class="h2">Fission: splitting heavy nuclei for energy</div>
+                    <div class="small">In reactors, a key practical detail is using slow ("thermal") neutrons so U-235
+                        can absorb and fission efficiently.</div>
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top: 12px;">
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> What happens</div>
+                        <p class="text" style="margin-top: 6px;">
+                            A U-235 nucleus absorbs a slow neutron, becomes unstable, and splits into lighter fragments
+                            while releasing energy and additional neutrons—enabling a chain reaction under controlled
+                            conditions.
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> Why it's useful</div>
+                        <p class="text" style="margin-top: 6px;">
+                            Fission provides high energy density electricity with very low direct carbon emissions (when
+                            managed in modern reactor systems) and supports important medical and industrial isotope
+                            production.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fusion" class="reveal">
+            <div class="secTop">
+                <div>
+                    <div class="h2">Fusion: the star-power option (hard, but transformative)</div>
+                    <div class="small">Fusion joins light nuclei; the most practical terrestrial target is
+                        deuterium–tritium (D-T) fusion, with tritium supplied by breeding from lithium.</div>
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top: 12px;">
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> Why fusion is so attractive</div>
+                        <p class="text" style="margin-top: 6px;">
+                            Fuel supply is extremely large (deuterium in seawater) and fusion avoids many long-lived
+                            fission product issues; it could deliver huge energy output with a comparatively small fuel
+                            mass.
+                        </p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p">
+                        <div class="tag risk"><span class="dot"></span> What makes it hard (and what must be solved)
+                        </div>
+                        <p class="text" style="margin-top: 6px;">
+                            Achieving fusion requires extreme temperatures and confinement; D-T fusion also produces
+                            energetic neutrons, which demand robust materials and careful energy capture and shielding
+                            designs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="use" class="reveal">
+            <div class="secTop">
+                <div>
+                    <div class="h2">Pros × Misuse (the real "public-interest" balance)</div>
+                    <div class="small">To keep the benefits, societies must pair nuclear technology with strong
+                        safeguards, transparency, and non-proliferation norms.</div>
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top: 12px;">
+                <div class="card">
+                    <div class="p">
+                        <div class="tag benefit"><span class="dot"></span> Pros (what we should scale)</div>
+                        <ul class="text" style="margin: 6px 0 0 18px; line-height: 1.6;">
+                            <li>High-density, reliable power (useful for grids needing firm low-carbon baseload).</li>
+                            <li>Medical imaging and therapy isotopes (diagnosis and cancer treatment).</li>
+                            <li>Industrial applications (materials testing, sterilization, tracing, and research).</li>
+                            <li>Scientific learning (fundamental physics and advanced engineering).</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p">
+                        <div class="tag risk"><span class="dot"></span> Misuse risks (what must be prevented)</div>
+                        <ul class="text" style="margin: 6px 0 0 18px; line-height: 1.6;">
+                            <li>Weaponization (fission or fusion designs) and proliferation pathways (e.g., material
+                                access and enrichment). </li>
+                            <li>Accidents and releases (reactor events or improper handling) affecting people and
+                                ecosystems.</li>
+                            <li>Long-lived waste management challenges (requiring secure containment and long-term
+                                planning).</li>
+                            <li>Escalation risk: strategic instability when deterrence becomes the default "safety
+                                system".</li>
+                        </ul>
+                        <p class="text" style="margin-top: 8px;">
+                            The practical takeaway: maximize benefits by building <strong>strong regulation,
+                                verification, safety culture, and international cooperation</strong>—not by pretending
+                            the downsides don't exist.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lab" class="reveal">
+            <div class="secTop">
+                <div>
+                    <div class="h2">Energy Lab (interactive): mass → energy → real-world scale</div>
+                    <div class="small">Play with a mass value and see the energy in joules, "U.S. citizen-years", and
+                        TNT-equivalent.</div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 12px;">
+                <div class="glow" aria-hidden="true"></div>
+                <div class="p">
+                    <div class="title">Try it</div>
+                    <div class="calc" role="group" aria-label="Mass-to-energy calculator">
+                        <div class="row">
+                            <label for="mass">Mass</label>
+                            <input id="mass" type="number" min="0" step="0.001" value="0.001" />
+                            <select id="unit">
+                                <option value="kg">kilograms (kg)</option>
+                                <option value="g">grams (g)</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <label for="slider">Quick slider</label>
+                            <input id="slider" type="range" min="0" max="1000" value="1" />
+                            <div class="small">slider maps to grams (0–1000 g)</div>
+                        </div>
+
+                        <div class="result" aria-live="polite">
+                            <div><strong>Energy:</strong> <span id="outEnergy" class="mono">—</span> J</div>
+                            <div><strong>U.S. citizen-years:</strong> <span id="outYears" class="mono">—</span></div>
+                            <div><strong>TNT-equivalent:</strong> <span id="outTNT" class="mono">—</span> tons</div>
+                            <div><strong>City of 1,000,000 (months):</strong> <span id="outCity" class="mono">—</span>
+                                months</div>
+                        </div>
+                    </div>
+                    <div class="foot">
+                        Note: these are order-of-magnitude conversions (useful for intuition), not an operational energy
+                        plan. Real systems have efficiency limits and multiple engineering constraints.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ---------- Data model (from your supplied numerics) ----------
+        const C = 2.99792458e8;                 // m/s
+        const J_PER_CITIZEN_YEAR = 5e11;        // ~ energy use per US citizen per year (given)
+        const J_PER_TON_TNT = 4.1e9;             // 1 ton TNT ~ 4.1e9 J (given)
+
+        function formatSci(num, digits = 3) {
+            if (!isFinite(num) || num < 0) return "—";
+            if (num === 0) return "0";
+            const exp = Math.floor(Math.log10(num));
+            const mant = num / Math.pow(10, exp);
+            return `${mant.toFixed(digits)}×10^${exp}`;
+        }
+
+        function clamp(n, a, b) { return Math.min(b, Math.max(a, n)); }
+
+        function computeAndRender() {
+            const massVal = parseFloat(document.getElementById("mass").value || "0");
+            const unit = document.getElementById("unit").value;
+
+            // Convert to kg (supports g input)
+            const massKg = unit === "g" ? massVal / 1000 : massVal;
+
+            // E = m c^2
+            const energyJ = massKg * C * C;
+
+            // Scales (from your provided reference values)
+            const citizenYears = energyJ / J_PER_CITIZEN_YEAR;
+            const tntTons = energyJ / J_PER_TON_TNT;
+            const cityMonths = (citizenYears / 1_000_000) * 12;
+
+            // Trigger animation on result panel
+            const resultEl = document.querySelector('.result');
+            resultEl.style.animation = 'none';
+            setTimeout(() => { resultEl.style.animation = ''; }, 10);
+
+            document.getElementById("outEnergy").textContent = formatSci(energyJ, 3);
+            document.getElementById("outYears").textContent = formatSci(citizenYears, 3);
+            document.getElementById("outTNT").textContent = formatSci(tntTons, 3);
+            document.getElementById("outCity").textContent = formatSci(cityMonths, 3);
+        }
+
+        // ---------- UI bindings ----------
+        const massEl = document.getElementById("mass");
+        const unitEl = document.getElementById("unit");
+        const sliderEl = document.getElementById("slider");
+
+        // Slider is mapped to grams for quick exploration (0–1000 g)
+        sliderEl.addEventListener("input", () => {
+            const grams = parseFloat(sliderEl.value);
+            unitEl.value = "g";
+            massEl.value = grams.toString();
+            computeAndRender();
+        });
+
+        massEl.addEventListener("input", computeAndRender);
+        unitEl.addEventListener("change", computeAndRender);
+
+        // Initialize with the default values
+        computeAndRender();
+
+        // ---------- GSAP animations ----------
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Smooth reveal for sections/cards
+        gsap.utils.toArray(".reveal").forEach((el) => {
+            gsap.fromTo(el,
+                { autoAlpha: 0, y: 24 },
+                {
+                    duration: 0.9,
+                    autoAlpha: 1,
+                    y: 0,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 86%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Subtle hero entrance (on load)
+        gsap.from(".hero .kicker", { duration: 0.9, y: -10, autoAlpha: 0, ease: "power2.out" });
+        gsap.from(".hero h1", { duration: 1.05, y: 14, autoAlpha: 0, ease: "power2.out", delay: 0.08 });
+        gsap.from(".hero .sub", { duration: 1.0, y: 14, autoAlpha: 0, ease: "power2.out", delay: 0.18 });
+
+        // Smooth in-page navigation
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener("click", (e) => {
+                const id = a.getAttribute("href").slice(1);
+                const target = document.getElementById(id);
+                if (!target) return;
+                e.preventDefault();
+                gsap.to(window, { duration: 0.75, scrollTo: { y: target, offsetY: 76 }, ease: "power2.inOut" });
+            });
+        });
+    </script>
+</body>
+
+</html>
